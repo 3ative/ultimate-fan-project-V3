@@ -1,0 +1,194 @@
+substitutions:
+  room: bedroom
+
+esphome:
+  name: fan-${room}
+  platform: ESP8266
+  board: esp01_1m
+
+wifi:
+  ssid: !secret ssid
+  password: !secret wifi_password
+
+logger:
+api:
+ota:
+
+mcp23008:
+  - id: "mcp23008_hub"
+    address: 0x20
+
+i2c:
+  sda: GPIO1 # Tx Blue
+  scl: GPIO3 # Rx Green
+  # scan: true
+
+binary_sensor:
+  - platform: gpio
+    id: button1
+    filters:
+      - delayed_on_off: 100ms
+    pin:
+      mcp23xxx: mcp23008_hub
+      number: 0
+      mode: INPUT_PULLUP
+      inverted: true
+    on_press:
+      then:
+        - switch.turn_on: master
+        - switch.toggle: relay1
+
+  - platform: gpio
+    id: button2
+    filters:
+      - delayed_on_off: 100ms
+    pin:
+      mcp23xxx: mcp23008_hub
+      number: 1
+      mode: INPUT_PULLUP
+      inverted: true
+    on_press:
+      then:
+        - switch.turn_on: master
+        - switch.toggle: relay2
+
+  - platform: gpio
+    id: button3
+    filters:
+      - delayed_on_off: 100ms
+    pin:
+      mcp23xxx: mcp23008_hub
+      number: 2
+      mode: INPUT_PULLUP
+      inverted: true
+    on_press:
+      then:
+        - switch.turn_on: master
+        - switch.toggle: relay3
+
+number:
+  - platform: template
+    name: Fan ${room} speed
+    id: fan_speed
+    icon: mdi:fan
+    update_interval: never
+    optimistic: true
+    min_value: 1
+    max_value: 3
+    initial_value: 1
+    step: 1
+    on_value:
+      - if:
+          condition:
+            and:
+              - switch.is_off: master
+          then:
+            - lambda: "id(relay1).turn_off();"
+            - lambda: "id(relay2).turn_off();"
+            - lambda: "id(relay3).turn_off();"
+      - if:
+          condition:
+            and:
+              - switch.is_on: master
+              - lambda: "return id(fan_speed).state == 1;"
+          then:
+            - lambda: "id(relay1).turn_on();"
+      - if:
+          condition:
+            and:
+              - switch.is_on: master
+              - lambda: "return id(fan_speed).state == 2;"
+          then:
+            - lambda: "id(relay2).turn_on();"
+      - if:
+          condition:
+            and:
+              - switch.is_on: master
+              - lambda: "return id(fan_speed).state == 3;"
+          then:
+            - lambda: "id(relay3).turn_on();"
+
+switch:
+  - platform: template
+    id: master
+    icon: mdi:fan
+    name: Fan ${room} master
+    optimistic: true
+
+    on_turn_off:
+      - lambda: "id(relay1).turn_off();"
+      - lambda: "id(relay2).turn_off();"
+      - lambda: "id(relay3).turn_off();"
+
+    on_turn_on:
+      - if:
+          condition:
+            lambda: "return id(fan_speed).state == 1;"
+          then:
+            - lambda: "id(relay1).turn_on();"
+
+      - if:
+          condition:
+            lambda: "return id(fan_speed).state == 2;"
+          then:
+            - lambda: "id(relay2).turn_on();"
+
+      - if:
+          condition:
+            lambda: "return id(fan_speed).state == 3;"
+          then:
+            - lambda: "id(relay3).turn_on();"
+
+  - platform: gpio
+    id: relay1
+    pin:
+      mcp23xxx: mcp23008_hub
+      number: 5
+      mode: OUTPUT
+      inverted: true
+    interlock: &interlock_group [relay1, relay2, relay3]
+    interlock_wait_time: 250ms
+    on_turn_on:
+      - switch.turn_on: internal_relay
+      - number.set:
+          id: fan_speed
+          value: 1
+    on_turn_off:
+      - switch.turn_off: internal_relay
+
+  - platform: gpio
+    id: relay2
+    pin:
+      mcp23xxx: mcp23008_hub
+      number: 6
+      mode: OUTPUT
+      inverted: true
+    interlock: *interlock_group
+    interlock_wait_time: 250ms
+    on_turn_on:
+      - number.set:
+          id: fan_speed
+          value: 2
+
+  - platform: gpio
+    id: relay3
+    pin:
+      mcp23xxx: mcp23008_hub
+      number: 7
+      mode: OUTPUT
+      inverted: true
+    interlock: *interlock_group
+    interlock_wait_time: 250ms
+    on_turn_on:
+      - number.set:
+          id: fan_speed
+          value: 3
+
+  - platform: gpio
+    id: internal_relay
+    pin: GPIO12
+
+status_led:
+  pin:
+    number: GPIO13
+    inverted: yes
