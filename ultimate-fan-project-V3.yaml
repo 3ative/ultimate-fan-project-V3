@@ -3,7 +3,7 @@ esphome:
   platform: ESP8266
   board: esp01_1m
 
-# Enter the name of the Room here - Underscores & Dashes ok but, no capitals or spaces!
+# Enter the name of the Room here
 substitutions:
   room: bedroom
 
