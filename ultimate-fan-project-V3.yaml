@@ -1,11 +1,13 @@
-substitutions:
-  room: bedroom
-
 esphome:
   name: fan-${room}
   platform: ESP8266
   board: esp01_1m
 
+# Enter the name of the Room here - Underscores & Dashes ok but, no capitals or spaces!
+substitutions:
+  room: bedroom
+
+# Replace your Wifi details
 wifi:
   ssid: !secret ssid
   password: !secret wifi_password
