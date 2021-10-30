@@ -9,7 +9,7 @@ Grab the full ESPHome Code from the file: [ultimate-fan-project-V3.yaml](https:/
 
 > - LED Speed indicators
 > - Original button functions
-> - Runs off a Sonoff Basic 
+> - Runs on a Sonoff Basic 
 
 
 #### YouTube guide and code tutorial: [ESPHome: Ultimate Fan Project v3.0 Tutorial](https://youtu.be/Z07tGZzi0BQ)
