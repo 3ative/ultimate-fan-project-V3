@@ -1,13 +1,11 @@
+substitutions:
+  name: kitchen
+
 esphome:
-  name: fan-${room}
+  name: fan-${name}
   platform: ESP8266
   board: esp01_1m
 
-# Enter the name of the Room here
-substitutions:
-  room: bedroom
-
-# Replace your Wifi details
 wifi:
   ssid: !secret ssid
   password: !secret wifi_password
@@ -37,8 +35,18 @@ binary_sensor:
       inverted: true
     on_press:
       then:
-        - switch.turn_on: master
-        - switch.toggle: relay1
+        - if:
+            condition:
+              and:
+                - lambda: "return id(speed).state == 1;"
+                - switch.is_on: master
+            then:
+              - switch.turn_off: master
+            else:
+              - number.set:
+                  id: speed
+                  value: 1
+              - switch.turn_on: master
 
   - platform: gpio
     id: button2
@@ -51,8 +59,18 @@ binary_sensor:
       inverted: true
     on_press:
       then:
-        - switch.turn_on: master
-        - switch.toggle: relay2
+        - if:
+            condition:
+              and:
+                - lambda: "return id(speed).state == 2;"
+                - switch.is_on: master
+            then:
+              - switch.turn_off: master
+            else:
+              - number.set:
+                  id: speed
+                  value: 2
+              - switch.turn_on: master
 
   - platform: gpio
     id: button3
@@ -65,13 +83,23 @@ binary_sensor:
       inverted: true
     on_press:
       then:
-        - switch.turn_on: master
-        - switch.toggle: relay3
+        - if:
+            condition:
+              and:
+                - lambda: "return id(speed).state == 3;"
+                - switch.is_on: master
+            then:
+              - switch.turn_off: master
+            else:
+              - number.set:
+                  id: speed
+                  value: 3
+              - switch.turn_on: master
 
 number:
   - platform: template
-    name: Fan ${room} speed
-    id: fan_speed
+    name: Fan ${name} speed
+    id: speed
     icon: mdi:fan
     update_interval: never
     optimistic: true
@@ -79,67 +107,40 @@ number:
     max_value: 3
     initial_value: 1
     step: 1
-    on_value:
+    set_action:
       - if:
           condition:
-            and:
-              - switch.is_off: master
+            - switch.is_on: master
           then:
-            - lambda: "id(relay1).turn_off();"
-            - lambda: "id(relay2).turn_off();"
-            - lambda: "id(relay3).turn_off();"
-      - if:
-          condition:
-            and:
-              - switch.is_on: master
-              - lambda: "return id(fan_speed).state == 1;"
-          then:
-            - lambda: "id(relay1).turn_on();"
-      - if:
-          condition:
-            and:
-              - switch.is_on: master
-              - lambda: "return id(fan_speed).state == 2;"
-          then:
-            - lambda: "id(relay2).turn_on();"
-      - if:
-          condition:
-            and:
-              - switch.is_on: master
-              - lambda: "return id(fan_speed).state == 3;"
-          then:
-            - lambda: "id(relay3).turn_on();"
+            - lambda: >-
+                if (x == 1) {return id(relay1).turn_on();}
+            - lambda: >-
+                if (x == 2) {return id(relay2).turn_on();}
+            - lambda: >-
+                if (x == 3) {return id(relay3).turn_on();}
 
 switch:
   - platform: template
     id: master
     icon: mdi:fan
-    name: Fan ${room} master
+    name: Fan ${name} master
     optimistic: true
-
+    on_turn_on:
+      then:
+        - lambda: >-
+            if (id(speed).state == 1) {return id(relay1).turn_on();}
+        - lambda: >-
+            if (id(speed).state == 2) {return id(relay2).turn_on();}
+        - lambda: >-
+            if (id(speed).state == 3) {return id(relay3).turn_on();}
     on_turn_off:
       - lambda: "id(relay1).turn_off();"
       - lambda: "id(relay2).turn_off();"
       - lambda: "id(relay3).turn_off();"
 
-    on_turn_on:
-      - if:
-          condition:
-            lambda: "return id(fan_speed).state == 1;"
-          then:
-            - lambda: "id(relay1).turn_on();"
-
-      - if:
-          condition:
-            lambda: "return id(fan_speed).state == 2;"
-          then:
-            - lambda: "id(relay2).turn_on();"
-
-      - if:
-          condition:
-            lambda: "return id(fan_speed).state == 3;"
-          then:
-            - lambda: "id(relay3).turn_on();"
+  - platform: gpio
+    id: internal_relay
+    pin: GPIO12
 
   - platform: gpio
     id: relay1
@@ -153,7 +154,7 @@ switch:
     on_turn_on:
       - switch.turn_on: internal_relay
       - number.set:
-          id: fan_speed
+          id: speed
           value: 1
     on_turn_off:
       - switch.turn_off: internal_relay
@@ -169,7 +170,7 @@ switch:
     interlock_wait_time: 250ms
     on_turn_on:
       - number.set:
-          id: fan_speed
+          id: speed
           value: 2
 
   - platform: gpio
@@ -183,12 +184,8 @@ switch:
     interlock_wait_time: 250ms
     on_turn_on:
       - number.set:
-          id: fan_speed
+          id: speed
           value: 3
-
-  - platform: gpio
-    id: internal_relay
-    pin: GPIO12
 
 status_led:
   pin:
