@@ -1,0 +1,17 @@
+if (msg.payload == "on") {
+     msg = {
+         "percentage": msg.percentage,
+         "topic": msg.topic,
+         "service": "turn_on"
+     }
+return msg
+}
+
+if (msg.payload == "off") {
+     msg = {
+         "percentage": msg.percentage,
+         "topic": msg.topic,
+         "service": "turn_off"
+     }
+return msg
+}
