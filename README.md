@@ -1,11 +1,12 @@
 # Ultimate Fan Project v3.1
-Converting any 3-Speed fan for Home Assistant control via ESPHome
+Converting any 3-Speed fan for Home Assistant control with ESPHome and a Sonoff Basic.
 
 #### _Features:_
 
 > - LED Speed indicators
 > - Original button functions
-> - Runs on a Sonoff Basic 
+> - Runs on a Sonoff Basic
+> - Alexa Control
 
 
 #### *Code-y Bits*
