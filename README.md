@@ -1,4 +1,4 @@
-# Ultimate Fan Project v3.0
+# Ultimate Fan Project v3.1
 Converting any 3-Speed fan for Home Assistant control via ESPHome
 
 #### _Features:_
@@ -12,7 +12,7 @@ Converting any 3-Speed fan for Home Assistant control via ESPHome
 - ESPHome Code: [ultimate-fan-project-V3.yaml](https://github.com/3ative/ultimate-fan-project-V3/blob/main/ultimate-fan-project-V3.yaml)
 - Custom Button: [Button_Card_Fan.yaml](https://github.com/3ative/ultimate-fan-project-V3/blob/main/Button_Card_Fan.yaml)
 
-#### YouTube guide and code tutorial: [Public Link to the Tutorial Coming Soon](https://www.youtube.com/c/3ATIVE/videos)
+#### YouTube guide and code tutorial: [Ultimate Fan Project v3.1](https://youtu.be/_XgJyYwlejo)
 
 
 
