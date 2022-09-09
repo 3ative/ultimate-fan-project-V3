@@ -18,7 +18,7 @@ Converting any 3-Speed fan for Home Assistant control with ESPHome and a Sonoff 
 #### Code tutorial of the [Custom Button Card Part4](https://youtu.be/-7Hu9lMZsjw)
 
 
-![Ulitmate Fan Project 3 1 schematic](https://user-images.githubusercontent.com/51385971/189445138-0b3d641c-a135-401e-aba5-0059baaec537.PNG)
+![Ulitmate Fan Project 3 1 schematic](https://user-images.githubusercontent.com/51385971/189445540-9e4d8813-5bf6-4e1f-9c84-06ef1243f866.PNG)
 
 
 ___
