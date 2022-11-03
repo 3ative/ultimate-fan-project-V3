@@ -23,9 +23,7 @@ Converting any 3-Speed fan for Home Assistant control with ESPHome and a Sonoff 
 
 ___
 
-
-🎁 Found this useful or want to say 'thanks' and support my efforts...
-
-[![BMC](https://www.buymeacoffee.com/assets/img/custom_images/white_img.png)](https://www.buymeacoffee.com/3ative) **And leave a me a message to let me know how much you ❤ it.**
-
-🍺 CHEERS! 👍
+#### 💖 Found this useful, want to say '*Thanks*' and support my efforts. *CHEERS*🍺
+| Buy me a Coffee | PATREON |
+|-----------------|---------|
+| https://www.buymeacoffee.com/3ative | https://www.patreon.com/3ative |
